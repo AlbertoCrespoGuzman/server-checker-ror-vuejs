@@ -5,13 +5,17 @@ Rails.application.routes.draw do
   delete 'signin', controller: :signin, action: :destroy
   get 'me', controller: :users, action: :me
 
-  resources :todos
+  resources :todos do
+    resources :list_items
+  end
   resources :password_resets, only: [:create] do
     collection do
       get ':token', action: :edit, as: :edit
       patch ':token', action: :update
     end
   end
+
+  
 
   namespace :admin do
     resources :users, only: [:index, :show, :update] do

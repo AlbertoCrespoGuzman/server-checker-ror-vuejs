@@ -5,6 +5,7 @@ import Signup from '@/components/Signup'
 import ForgotPassword from '@/components/ForgotPassword'
 import ResetPassword from '@/components/ResetPassword'
 import TodosList from '@/components/todos/List'
+import ListItems from '@/components/list_items/ListItems'
 import UsersList from '@/components/admin/users/List'
 import UserEdit from '@/components/admin/users/Edit'
 import UserTodosList from '@/components/admin/users/todos/List'
@@ -27,6 +28,11 @@ export default new Router({
       path: '/todos',
       name: 'List',
       component: TodosList
+    },
+    {
+      path: '/todos/:todo_id/list_items',
+      name: 'ListItems',
+      component: ListItems
     },
     {
       path: '/forgot_password',

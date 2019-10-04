@@ -11,8 +11,8 @@
     <br />
     <ul class="list-group">
       <li class="list-group-item" v-for="todo in todos" :key="todo.id" :todo="todo">
-        <div v-show="todo != editedTodo" @dblclick="editTodo(todo)">
-          <label>{{ todo.title }}</label>
+        <div v-show="todo != editedTodo" @click="showListItems(todo)" @dblclick="editTodo(todo)">
+          <label>{{ todo.title  }} - {{todo.id}}</label>
           <i class="fa fa-trash-alt float-right" @click="removeTodo(todo)"></i>
         </div>
         <div v-show="todo == editedTodo">
@@ -45,7 +45,10 @@ export default {
       this.$router.replace('/')
     } else {
       this.$http.secured.get('/todos')
-        .then(response => { this.todos = response.data })
+        .then(response => {
+          this.todos = response.data
+          console.log(JSON.stringify(response.data))
+        })
         .catch(error => { this.setError(error, 'Something went wrong') })
     }
   },
@@ -77,6 +80,9 @@ export default {
       this.editedTodo = ''
       this.$http.secured.patch(`/todos/${todo.id}`, { todo: { title: todo.title } })
         .catch(error => this.setError(error, 'Cannot update todo'))
+    },
+    showListItems (todo) {
+      this.$router.replace('/todos/' + todo.id + '/list_items/')
     }
   },
   directives: {
