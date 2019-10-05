@@ -2,26 +2,71 @@
   <div class="todos">
     <AppHeader></AppHeader>
     <div class="alert alert-danger" v-if="error">{{ error }}</div>
-    <h3>ListItems</h3>
-    <input class="form-control"
+    <h3>Servers</h3>
+
+  <p>
+      <button class="btn btn-primary" type="button" @click="toggleCollapseAddItem()" >
+        Add Server
+      </button>
+  </p>
+  <div v-bind:class="[addItemButton ? 'collapse show' : 'collapse']" >
+    <div class="card card-body">
+      <input class="form-control"
       autofocus autocomplete="off"
-      placeholder="List item test?"
-      v-model="newItem"
-      @keyup.enter="addItem" />
-    <br />
+      placeholder="Name"
+      v-model="newItemName" />
+      <br />
+      <input class="form-control"
+      autofocus autocomplete="off"
+      placeholder="URL BASE"
+      v-model="newItemUrlBase" />
+      <br />
+      <input class="form-control"
+      autofocus autocomplete="off"
+      placeholder="URL ENDPOINT"
+      v-model="newItemUrlEndpoint" />
+      <br />
+      <button class="btn btn-primary" type="button" @click="addItem" >
+        Save
+      </button>
+    </div>
+  </div>
+  <br />
     <ul class="list-group">
       <li class="list-group-item" v-for="item in list_items" :key="item.id" :item="item">
-        <div v-show="item != editedItem" >
-          <label>{{ item.name }}</label>
-          <i class="fa fa-trash-alt float-right" @click="removeItem(item)"></i>
+        <div v-show="item != editedItem" style="text-align: left;"  @dblclick="editItem(item)">
+          <p style="font-size:20px"><strong>{{ item.name }}</strong></p>
+          <p v-if="item.status === 'ok'">Status 🥳 <i style="color:green" class="fa fa-check-circle"></i> </p>
+          <p v-else>Status 😵<i style="color:red" class="fa fa-exclamation-circle"></i> </p>
+          <p>Last check: {{ item.updated_at}}</p>
+          <p>URL: {{ item.url_base }}</p>
+          <p>END_POINT: {{ item.url_endpoint }}</p>
+          <p>Requests: {{item.requests}}</p>
+          <p>Errors: {{item.thrown_errors}}</p>
+          <i class="fa fa-trash-alt float-right" @click="removeItemAlert(item)"></i>
         </div>
-        <div v-show="item == editedItem">
-          <input class="form-control"
-            v-item-focus
-            @keyup.enter="updateItem(item)"
-            v-model="item.name"
-          />
-        </div>
+        <div  v-show="item == editedItem">
+            <div class="card card-body">
+              <input class="form-control"
+              autofocus autocomplete="off"
+              placeholder="Name"
+              v-model="item.name" />
+              <br />
+              <input class="form-control"
+              autofocus autocomplete="off"
+              placeholder="URL BASE"
+              v-model="item.url_base" />
+              <br />
+              <input class="form-control"
+              autofocus autocomplete="off"
+              placeholder="URL ENDPOINT"
+              v-model="item.url_endpoint" />
+              <br />
+              <button class="btn btn-primary" type="button" @click="updateItem(item)" >
+                Save
+              </button>
+            </div>
+          </div>
       </li>
     </ul>
   </div>
@@ -31,11 +76,14 @@
 import AppHeader from '@/components/AppHeader'
 
 export default {
-  name: 'List',
+  name: 'ListItem',
   data () {
     return {
       list_items: [],
-      newItem: [],
+      newItemName: [],
+      newItemUrlBase: [],
+      newItemUrlEndpoint: [],
+      addItemButton: false,
       error: '',
       editedItem: ''
     }
@@ -56,17 +104,28 @@ export default {
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error) || text
     },
+    toggleCollapseAddItem () {
+      this.addItemButton = !this.addItemButton
+    },
     addItem () {
-      const value = this.newItem && this.newItem.trim()
+      const value = this.newItemName
       if (!value) {
         return
       }
-      this.$http.secured.post('/todos/1/list_items', { list_item: { name: this.newItem, url_base: 'url_base', url_endpoint: 'url_endpoint'} })
+      this.$http.secured.post('/todos/1/list_items', { list_item: { name: this.newItemName, url_base: this.newItemUrlBase, url_endpoint: this.newItemUrlEndpoint } })
         .then(response => {
           this.list_items.push(response.data)
-          this.newItem = ''
+          this.newItemName = ''
+          this.newItemUrlBase = ''
+          this.newItemUrlEndpoint = ''
+          this.toggleCollapseAddItem()
         })
         .catch(error => this.setError(error, 'Cannot create item'))
+    },
+    removeItemAlert (item) {
+      if (confirm('Are you sure you want to delete ' + item.name + '?')) {
+        this.removeItem(item)
+      }
     },
     removeItem (item) {
       this.$http.secured.delete(`/todos/1/list_items/${item.id}`)
@@ -78,7 +137,7 @@ export default {
     },
     updateItem (item) {
       this.editedItem = ''
-      this.$http.secured.patch(`/todos/1/list_items/${item.id}`, { item: { name: item.name } })
+      this.$http.secured.patch(`/todos/1/list_items/${item.id}`, { list_item: { name: item.name, url_base: item.url_base, url_endpoint: item.url_endpoint } })
         .catch(error => this.setError(error, 'Cannot update todo'))
     }
   },

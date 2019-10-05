@@ -2,7 +2,7 @@
   "name": "todos-vue",
   "version": "1.0.0",
   "description": "Todos Vue.js application",
-  "author": "Yulia Oletskaya <yulia.oletskaya@gmail.com>",
+  "author": "Alberto Crespo <alberto.crespo86@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

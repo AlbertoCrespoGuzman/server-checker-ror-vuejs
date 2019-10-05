@@ -37,7 +37,7 @@ class ListItemsController < ApplicationController
   
     def set_list_item
       @todo = Todo.find(params[:todo_id])
-      @list_item = @todo.item_lists.find(params[:id])
+      @list_item = @todo.list_items.find(params[:id])
     end
   
     def list_item_params
