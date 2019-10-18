@@ -21,6 +21,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
+gem 'rufus-scheduler', '~> 3.6'
+gem 'fcm'
 
 group :development, :test do
   gem 'pry-byebug', '~> 3.4'
