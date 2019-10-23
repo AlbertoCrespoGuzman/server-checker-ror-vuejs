@@ -33,7 +33,7 @@ s.every '25m' do
             list_item.thrown_errors = list_item.thrown_errors + 1
         end
 
-        if list_item.status == 'ok'
+        if list_item.status == 'ko'
             @users.each { | user |  
             
                 options = { "notification": {
