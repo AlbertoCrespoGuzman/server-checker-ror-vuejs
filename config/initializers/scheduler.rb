@@ -3,7 +3,7 @@ require 'net/http'
 require 'fcm'
 s = Rufus::Scheduler.singleton
 
-fcm_client = FCM.new("AAAAUpQ3OsQ:APA91bFgIYjUqP2BzaVmppgvhKlFlX0jK4gmDrDvCp__drk8ZlRdlm10BZVXkHuu_pbWtk8i0mCiU8QDkCB9ps3VQo92OX8m8AomZDHgyqJpSc_KHoWCZdhhzP6KDvcr_njjZlWt73Xd")
+fcm_client = FCM.new("cloud messaging key")
 
 
 s.every '25m' do
